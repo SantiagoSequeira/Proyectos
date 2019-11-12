@@ -65,8 +65,9 @@ const db = (opc,nota=null,id=null,val=null) =>{
   const ImprimirNotas = () => {
     listaNotas.innerHTML ="";
     let estado = false;
-    if(arrayActividades === null){
+    if(arrayActividades.length == 0){
       arrayActividades = [];
+      listaNotas.innerHTML += `<div class="alert alert-warning" role="alert"><b>No tienes notas!</b></div>`;
     } else {
       for(let i of arrayActividades){
         if(i.Estado == '1'){

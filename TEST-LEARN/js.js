@@ -488,9 +488,12 @@ buscador.addEventListener('keyup', () => {
 
 
 
+// Select the node that will be observed for mutations
+const targetNode = document.getElementById('checkthis');
 
-
-
+targetNode.addEventListener('keyup',function(){
+  window.alert("ke");
+})
 
 
 
