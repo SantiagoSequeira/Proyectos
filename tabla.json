@@ -1,0 +1,26 @@
+[
+  {
+    "id":"1",
+    "nombre":"Santiago",
+    "apellido":"sequeira",
+    "activo":true
+  },
+  {
+    "id":"2",
+    "nombre":"Juan",
+    "apellido":"sequeira",
+    "activo":false
+  },
+  {
+    "id":"3",
+    "nombre":"Cristian",
+    "apellido":"sequeira",
+    "activo":false
+  },
+  {
+    "id":"4",
+    "nombre":"Maria",
+    "apellido":"sequeira",
+    "activo":true
+  }
+]
