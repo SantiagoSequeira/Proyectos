@@ -34,62 +34,33 @@
   }
 
   //funciones
+const db = (opc,nota=null,id=null,val=null) =>{
+  var x = new FormData();
+  x.append( "opc", opc );
+  x.append( "nota", nota );
+  x.append( "id", id );
+  x.append( "val", val );
+  if(opc == 0) {
+  fetch("db.php",
+  {
+      method: "POST",
+      body: x
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    arrayActividades = data;
+    ImprimirNotas();
+   })
+ } else {
+   fetch("db.php",
+   {
+       method: "POST",
+       body: x
+   })
+   .then(function(res){ db(0);})
 
-  const agregar = (nota) => {
-    if(nota != ''){
-        const xhttp = new XMLHttpRequest();
-        xhttp.open('POST', 'db.php' , true);
-        var params = "opc=new&nota=" + nota;
-        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhttp.onreadystatechange = function(){
-          if(this.readyState == 4 && this.status == 200){
-            actualizarDatos();
-          }
-        }
-        xhttp.send(params);
-  }
-  }
-   function actualizarDatos () {
-    let xhttp = new XMLHttpRequest();
-    xhttp.open('POST', 'db.php', true);
-    var params = "opc=list";
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.onreadystatechange = function(){
-      if(this.readyState == 4 && this.status == 200){
-        var datos = JSON.parse(this.responseText);
-        arrayActividades = datos;
-        console.log(this.responseText);
-        ImprimirNotas();
-      }
-    }
-    xhttp.send(params);
-  }
-
-  const Editar = (actividad,texto) => {
-      const xhttp = new XMLHttpRequest();
-      xhttp.open('POST', 'db.php' , true);
-      var params = 'id=' + actividad +"&opc=" + "edit&val=" + texto;
-      xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhttp.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-          actualizarDatos();
-        }
-      }
-      xhttp.send(params);
-  }
-
-  const Change = (actividad,estado) => {
-      const xhttp = new XMLHttpRequest();
-      xhttp.open('POST', 'db.php' , true);
-      var params = 'id=' + actividad +"&opc=" + "change&val=" + estado;
-      xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhttp.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-          actualizarDatos();
-        }
-      }
-      xhttp.send(params);
-  }
+ }
+}
 
   const ImprimirNotas = () => {
     listaNotas.innerHTML ="";
@@ -108,47 +79,33 @@
     }
   }
 
-  const Eliminar = (actividad) => {
-    let opc = confirm("Estas seguro de eliminar la actividad: " + actividad + " ?");
-    if(opc){
-      const xhttp = new XMLHttpRequest();
-      xhttp.open('POST', 'db.php' , true);
-      var params = 'id=' + actividad +"&opc=" + "del";
-      xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhttp.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-          actualizarDatos();
-        }
-      }
-      xhttp.send(params);
-    }
-    //Guardar();
-  }
-
   //eventListener
   formNotas.addEventListener('submit',function(e){
     e.preventDefault();
     let nota = document.querySelector("#nota").value;
-    agregar(nota);
+    db(1,nota);
     formNotas.reset();
 
   });
 
-  document.addEventListener('DOMContentLoaded', actualizarDatos);
+  document.addEventListener('DOMContentLoaded', db(0));
 
   listaNotas.addEventListener('click', (e)=> {
     e.preventDefault();
+    let id= e.path[2].childNodes[0].innerHTML;
     if (e.target.innerHTML == "done_all"){
-      Change(e.path[2].childNodes[0].innerHTML,e.path[2].childNodes[4].innerHTML);
+      let estatus= e.path[2].childNodes[4].innerHTML;
+      db(3,null,id,estatus);
     } else if(e.target.innerHTML == "delete_forever"){
-      Eliminar(e.path[2].childNodes[0].innerHTML);
+      db(2,null,id);
     } else if(e.target.innerHTML == "autorenew"){
-      Change(e.path[2].childNodes[0].innerHTML,e.path[2].childNodes[4].innerHTML);
+      let estatus= e.path[2].childNodes[4].innerHTML;
+      db(3,null,id,estatus);
     } else if(e.target.innerHTML == "create"){
       let text = e.path[2].childNodes[2].innerHTML;
       let newText = prompt("Editar:",text);
       if(!(text == newText || newText === null)){
-        Editar(e.path[2].childNodes[0].innerHTML,newText);
+        db(4,null,id,newText);
       }
     }
   });
